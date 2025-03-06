@@ -1,1 +1,2 @@
-# blockchain-for-decentralized-voting
+# E-voting using blockchain
+
