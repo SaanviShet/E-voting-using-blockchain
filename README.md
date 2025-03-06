@@ -1,1 +1,1 @@
-# blockchain-for-decentralized-voting-system
+# blockchain-for-decentralized-voting
