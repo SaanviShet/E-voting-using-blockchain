@@ -1,15 +1,24 @@
 const express = require('express');
 const path = require('path');
 const jwt = require('jsonwebtoken');
+const authenticateToken = require("./database/authmiddleware");
 
 require('dotenv').config();
-
 const app = express();
 
+// Serve static files from 'public' (HTML, CSS, JS)
+app.use(express.static(path.join(__dirname, 'src')));
+
+// Serve node_modules (for frontend libraries)
+app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
+
+// Serve contract JSON files from build/contracts
+app.use('/contracts', express.static(path.join(__dirname, 'build/contracts')));
 
 // Authorization middleware
 const authorizeUser = (req, res, next) => {
-  const token = req.query.Authorization?.split('Bearer ')[1];
+  console.log(req.query.Authorization.split('Bearer ')[1]);
+  const token = req.query.Authorization.split('Bearer ')[1];
 
   if (!token) {
     return res.status(401).send('<h1 align="center"> Login to Continue </h1>');
@@ -17,7 +26,7 @@ const authorizeUser = (req, res, next) => {
   
   try {
     // Verify and decode the token
-    const decodedToken = jwt.verify(token, process.env.SECRET_KEY, { algorithms: ['HS256'] });
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
     req.user = decodedToken;
     next(); // Proceed to the next middleware
@@ -26,45 +35,21 @@ const authorizeUser = (req, res, next) => {
   }
 };
 
+
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'src/html/index.html'));
+  res.sendFile(path.join(__dirname, 'src/html/login.html'));
 });
 
+app.get('/register', (req, res) => {
+  res.sendFile(path.join(__dirname, 'src/html/register.html'));
+});
 
-// app.get('/', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'src/html/login.html'));
-// });
-
-// app.get('/js/login.js', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'src/js/login.js'))
-// });
-
-// app.get('/css/login.css', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'src/css/login.css'))
-// });
-
-// app.get('/css/index.css', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'src/css/index.css'))
-// });
-
-// app.get('/css/admin.css', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'src/css/admin.css'))
-// });
-
-// app.get('/assets/eth5.jpg', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'src/assets/eth5.jpg'))
-// });
-
-app.get('/js/app.js', (req, res) => {
-  res.sendFile(path.join(__dirname, 'src/js/app.js'))
+app.get('/index', authorizeUser, (req, res) => {
+  res.sendFile(path.join(__dirname, 'src/html/index.html'));
 });
 
 // app.get('/admin.html', authorizeUser, (req, res) => {
 //   res.sendFile(path.join(__dirname, 'src/html/admin.html'));
-// });
-
-// app.get('/index.html', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'src/html/index.html'));
 // });
 
 // app.get('/dist/login.bundle.js', (req, res) => {
