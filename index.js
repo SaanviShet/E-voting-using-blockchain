@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
-const jwt = require('jsonwebtoken');
-const authenticateToken = require("./database/authmiddleware");
+//const jwt = require('jsonwebtoken');
+//const authenticateToken = require("./database/authmiddleware");
 
 require('dotenv').config();
 const app = express();
@@ -15,37 +15,41 @@ app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 // Serve contract JSON files from build/contracts
 app.use('/contracts', express.static(path.join(__dirname, 'build/contracts')));
 
-// Authorization middleware
-const authorizeUser = (req, res, next) => {
-  console.log(req.query.Authorization.split('Bearer ')[1]);
-  const token = req.query.Authorization.split('Bearer ')[1];
+// // Authorization middleware
+// const authorizeUser = (req, res, next) => {
+//   console.log(req.query.Authorization.split('Bearer ')[1]);
+//   const token = req.query.Authorization.split('Bearer ')[1];
 
-  if (!token) {
-    return res.status(401).send('<h1 align="center"> Login to Continue </h1>');
-  }
+//   if (!token) {
+//     return res.status(401).send('<h1 align="center"> Login to Continue </h1>');
+//   }
   
-  try {
-    // Verify and decode the token
-    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+//   try {
+//     // Verify and decode the token
+//     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
-    req.user = decodedToken;
-    next(); // Proceed to the next middleware
-  } catch (error) {
-    return res.status(401).json({ message: 'Invalid authorization token' });
-  }
-};
+//     req.user = decodedToken;
+//     next(); // Proceed to the next middleware
+//   } catch (error) {
+//     return res.status(401).json({ message: 'Invalid authorization token' });
+//   }
+// };
 
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'src/html/login.html'));
 });
 
+app.get('/index', (req, res) => {
+  res.sendFile(path.join(__dirname, 'src/html/index.html'));
+});
+
 app.get('/register', (req, res) => {
   res.sendFile(path.join(__dirname, 'src/html/register.html'));
 });
 
-app.get('/index', authorizeUser, (req, res) => {
-  res.sendFile(path.join(__dirname, 'src/html/index.html'));
+app.get('/wallet', (req, res) => {
+  res.sendFile(path.join(__dirname, 'src/html/wallet.html'));
 });
 
 // app.get('/admin.html', authorizeUser, (req, res) => {

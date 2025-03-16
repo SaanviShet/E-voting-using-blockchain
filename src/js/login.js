@@ -24,11 +24,13 @@ loginForm.addEventListener('submit', async (event) => {
 
         if (data.token) {
             if (data.role === "admin") {
+                localStorage.setItem("voterId", voter_id);
                 localStorage.setItem("jwtTokenAdmin", data.token);
-                window.location.replace(`http://127.0.0.1:8080/index?Authorization=Bearer ${localStorage.getItem("jwtTokenAdmin")}`);
+                window.location.replace(`http://127.0.0.1:8080/wallet`);
             } else if (data.role === "user") {
+                localStorage.setItem("voterId", voter_id);
                 localStorage.setItem("jwtTokenVoter", data.token);
-                window.location.replace(`http://127.0.0.1:8080/index?Authorization=Bearer ${localStorage.getItem("jwtTokenVoter")}`);
+                window.location.replace(`http://127.0.0.1:8080/wallet`);
             }
         } else {
             throw new Error("Invalid credentials");

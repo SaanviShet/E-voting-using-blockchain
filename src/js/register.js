@@ -35,8 +35,16 @@ loginForm.addEventListener('submit', async (event) => {
         const result = await response.json();
   
         if (response.ok) {
+          if(role=="user"){
+            localStorage.setItem("voterId", voter_id);
             localStorage.setItem("jwtTokenUser", result.token);
-            window.location.replace(`http://127.0.0.1:8080/index`);
+            window.location.replace(`http://127.0.0.1:8080/wallet`);
+          }else{
+            localStorage.setItem("voterId", voter_id);
+            localStorage.setItem("jwtTokenAdmin", result.token);
+            window.location.replace(`http://127.0.0.1:8080/wallet`);
+          }
+            
         } else {
           alert(result.message || "Registration failed!");
         }

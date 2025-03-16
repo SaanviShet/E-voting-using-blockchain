@@ -39,6 +39,7 @@ db.connect(err => {
 app.post('/register', async (req, res) => {
     
     const { voter_id, role, password } = req.body;
+    console.log(voter_id, role, password);
     
     // Hash password before storing
     const hashedPassword = await bcrypt.hash(password, 10);
